@@ -26,7 +26,7 @@ def search():
 
         # 🔴 Replace this with your REAL API
         response = requests.get(
-            "https://api.example.com/search",
+            "1083142073:WZULdbJP",
             headers={"Authorization": f"Bearer {API_KEY}"},
             params={"query": q}
         )
