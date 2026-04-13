@@ -1,44 +1,33 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, request
 import requests
 import os
 
 app = Flask(__name__)
-CORS(app)
 
-API_KEY = os.getenv("API_KEY")
+BOT_TOKEN = os.getenv("API_KEY")
+BASE_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def home():
-    return "Backend is running"
+    return "Bot is running"
 
-@app.route("/search", methods=["POST"])
-def search():
-    data = request.json
-    queries = data.get("queries", [])
+@app.route("/", methods=["POST"])
+def webhook():
+    data = request.get_json()
 
-    results = []
+    try:
+        message = data["message"]["text"]
+        chat_id = data["message"]["chat"]["id"]
 
-    for q in queries:
-        q = q.strip()
-        if not q:
-            continue
+        # 🔹 Your logic (for now simple)
+        reply = f"You searched: {message}"
 
-        # 🔴 Replace this with your REAL API
-        response = requests.get(
-            "1083142073:WZULdbJP",
-            headers={"Authorization": f"Bearer {API_KEY}"},
-            params={"query": q}
-        )
-
-        try:
-            result = response.json()
-        except:
-            result = {"error": "Invalid response"}
-
-        results.append({
-            "query": q,
-            "data": result
+        requests.get(f"{BASE_URL}/sendMessage", params={
+            "chat_id": chat_id,
+            "text": reply
         })
 
-    return jsonify(results)
+    except Exception as e:
+        print(e)
+
+    return "ok"
