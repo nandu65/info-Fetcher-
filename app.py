@@ -6,7 +6,11 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = os.getenv("API_KEY")  # keep secret
+API_KEY = os.getenv("API_KEY")
+
+@app.route("/")
+def home():
+    return "Backend is running"
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -20,7 +24,7 @@ def search():
         if not q:
             continue
 
-        # 🔴 Replace with your real API
+        # 🔴 Replace this with your REAL API
         response = requests.get(
             "https://api.example.com/search",
             headers={"Authorization": f"Bearer {API_KEY}"},
@@ -38,7 +42,3 @@ def search():
         })
 
     return jsonify(results)
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
